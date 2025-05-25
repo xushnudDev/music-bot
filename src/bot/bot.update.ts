@@ -5,11 +5,9 @@ import { Context } from 'telegraf';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const youtubeDlExec = require('youtube-dl-exec');
-
+const youtubeDl = require('youtube-dl-exec').create('/usr/local/bin/yt-dlp');
 
 ffmpeg.setFfmpegPath(ffmpegPath!);
-
 
 @Update()
 export class TelegramMusic {
@@ -45,12 +43,8 @@ Masalan: \`https://www.youtube.com/watch?v=dQw4w9WgXcQ\`
   @On('text')
   async handleYoutubeLink(@Ctx() ctx: Context & { message: { text: string } }) {
     const text = ctx.message.text;
-    // console.log("salom",text);
-    
-    const youtubeUrlRegex = /^(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.be)\/.+$/;
 
-    // console.log("salom",youtubeUrlRegex);
-    
+    const youtubeUrlRegex = /^(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.be)\/.+$/;
 
     if (!youtubeUrlRegex.test(text)) {
       await ctx.reply('Iltimos, toʻgʻri YouTube link yuboring!');
@@ -60,21 +54,16 @@ Masalan: \`https://www.youtube.com/watch?v=dQw4w9WgXcQ\`
     await ctx.reply('Musiqa yuklanmoqda...');
 
     const outputFileName = `audio_${Date.now()}.mp3`;
-    console.log("salom",outputFileName);
-    
     const outputPath = path.resolve(__dirname, outputFileName);
-    console.log("salom",outputPath);
-    
 
     try {
-      await youtubeDlExec(text, {
-        executablePath: '/usr/local/bin/yt-dlp',
+      await youtubeDl(text, {
         extractAudio: true,
         audioFormat: 'mp3',
-        audioQuality: 128,
+        audioQuality: '128',
         output: outputPath,
         noCheckCertificates: true,
-        ffmpegLocation: ffmpegPath!, 
+        ffmpegLocation: ffmpegPath!,
       });
 
       const stats = fs.statSync(outputPath);
