@@ -17,7 +17,7 @@ export class TelegramMusic {
   async onHelp(@Ctx() ctx: Context) {
     await ctx.replyWithMarkdownV2(
       `🎵 *YouTube MP3 Bot Yordam* 🎵
-
+      
 1\\. *YouTube videosi havolasini yuboring*  
 Masalan: \`https://www.youtube.com/watch?v=dQw4w9WgXcQ\`
 
@@ -43,7 +43,6 @@ Masalan: \`https://www.youtube.com/watch?v=dQw4w9WgXcQ\`
   @On('text')
   async handleYoutubeLink(@Ctx() ctx: Context & { message: { text: string } }) {
     const text = ctx.message.text;
-
     const youtubeUrlRegex = /^(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.be)\/.+$/;
 
     if (!youtubeUrlRegex.test(text)) {
@@ -53,10 +52,19 @@ Masalan: \`https://www.youtube.com/watch?v=dQw4w9WgXcQ\`
 
     await ctx.reply('Musiqa yuklanmoqda...');
 
-    const outputFileName = `audio_${Date.now()}.mp3`;
-    const outputPath = path.resolve(__dirname, outputFileName);
-
     try {
+      const info = await youtubeDl(text, {
+        dumpSingleJson: true,
+        noCheckCertificates: true,
+        ffmpegLocation: ffmpegPath!,
+      });
+
+      let title = info.title || 'audio';
+      title = title.replace(/[\\\/:*?"<>|]/g, '').trim();
+
+      const outputFileName = `${title}.mp3`;
+      const outputPath = path.resolve(__dirname, outputFileName);
+
       await youtubeDl(text, {
         extractAudio: true,
         audioFormat: 'mp3',
@@ -79,10 +87,6 @@ Masalan: \`https://www.youtube.com/watch?v=dQw4w9WgXcQ\`
     } catch (error: any) {
       console.error('Xatolik yuz berdi:', error);
       await ctx.reply(`❌ Xatolik: Yuklab boʻlmadi. Iltimos, boshqa link urinib koʻring.\n\nXato: ${error.message}`);
-
-      if (fs.existsSync(outputPath)) {
-        fs.unlinkSync(outputPath);
-      }
     }
   }
 }
