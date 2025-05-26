@@ -42,7 +42,7 @@ Masalan: \`https://www.youtube.com/watch?v=dQw4w9WgXcQ\`
 
   @On('text')
   async handleYoutubeLink(@Ctx() ctx: Context & { message: { text: string } }) {
-    const text = ctx.message.text;
+    const text = ctx.message.text;    
     const youtubeUrlRegex = /^(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.be)\/.+$/;
 
     if (!youtubeUrlRegex.test(text)) {

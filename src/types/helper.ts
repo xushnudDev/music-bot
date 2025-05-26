@@ -1,6 +1,5 @@
 declare module 'youtube-dl-wrap' {
   interface YoutubeDlWrapOptions {
-    // Bu yerga kerak bo'lsa opsiyalar qo'shishingiz mumkin
   }
 
   class YoutubeDlWrap {
