@@ -57,6 +57,7 @@ Masalan: \`https://www.youtube.com/watch?v=dQw4w9WgXcQ\`
         dumpSingleJson: true,
         noCheckCertificates: true,
         ffmpegLocation: ffmpegPath!,
+        // cookies: '/root/projects/music-bot/cookies.txt',
       });
 
       let title = info.title || 'audio';
@@ -72,13 +73,14 @@ Masalan: \`https://www.youtube.com/watch?v=dQw4w9WgXcQ\`
         output: outputPath,
         noCheckCertificates: true,
         ffmpegLocation: ffmpegPath!,
+        // cookies: '/root/projects/music-bot/cookies.txt',
       });
 
       const stats = fs.statSync(outputPath);
       const fileSizeInMb = stats.size / (1024 * 1024);
 
       if (fileSizeInMb > 50) {
-        await ctx.reply('Fayl hajmi 50MB dan oshib ketdi. Kichikroq video tanlang.');
+        await ctx.reply('Fayl hajmi 50MB dan oshib ketdi. Iltimos, kichikroq video tanlang.');
       } else {
         await ctx.replyWithAudio({ source: outputPath });
       }
@@ -86,7 +88,7 @@ Masalan: \`https://www.youtube.com/watch?v=dQw4w9WgXcQ\`
       fs.unlinkSync(outputPath);
     } catch (error: any) {
       console.error('Xatolik yuz berdi:', error);
-      await ctx.reply(`❌ Xatolik: Yuklab boʻlmadi. Iltimos, boshqa link urinib koʻring.\n\nXato: ${error.message}`);
+      await ctx.reply(`❌ Xatolik yuz berdi. Iltimos, boshqa link urinib koʻring.\n\nXato: ${error.message}`);
     }
   }
 }
